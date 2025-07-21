@@ -4,22 +4,20 @@ Module.register("MMM-CountDown",{
     },
 
     start: function() {
-        // Load timers from localStorage if available
-        const stored = localStorage.getItem("MMM-CountDown-timers");
-        if (stored) {
-            try {
-                this.timers = JSON.parse(stored);
-            } catch (e) {
-                this.timers = this.config.timers.slice();
-            }
-        } else {
-            this.timers = this.config.timers.slice();
-        }
-        this.loaded = true;
-        this.updateDom();
+        this.timers = [];
+        this.loaded = false;
+        this.sendSocketNotification("LOAD_TIMERS");
         this.timerInterval = setInterval(() => {
             this.updateDom();
         }, 1000);
+    },
+
+    socketNotificationReceived: function(notification, payload) {
+        if (notification === "TIMERS_LOADED") {
+            this.timers = payload || [];
+            this.loaded = true;
+            this.updateDom();
+        }
     },
 
     getDom: function() {
@@ -81,7 +79,7 @@ Module.register("MMM-CountDown",{
         modalOverlay.style.display = "flex";
         modalOverlay.style.alignItems = "center";
         modalOverlay.style.justifyContent = "center";
-        modalOverlay.style.zIndex = "9999";
+        modalOverlay.style.zIndex = "100";
 
         // Modal content
         const modalContent = document.createElement("div");
@@ -131,7 +129,7 @@ Module.register("MMM-CountDown",{
             const end = form.end.value;
             if (name && end) {
                 this.timers.push({ name, end });
-                localStorage.setItem("MMM-CountDown-timers", JSON.stringify(this.timers)); // Save timers
+                this.sendSocketNotification("SAVE_TIMERS", this.timers); // Save timers to disk
                 this.updateDom();
             }
             modalOverlay.remove();
@@ -159,7 +157,7 @@ Module.register("MMM-CountDown",{
 
     removeTimer: function(idx) {
         this.timers.splice(idx, 1);
-        localStorage.setItem("MMM-CountDown-timers", JSON.stringify(this.timers)); // Save timers
+        this.sendSocketNotification("SAVE_TIMERS", this.timers); // Save timers to disk
         this.updateDom();
     },
 
