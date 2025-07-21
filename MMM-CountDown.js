@@ -1,4 +1,4 @@
-Module.register("MMM-CountDownTimers",{
+Module.register("MMM-CountDown",{
     defaults: {
         timers: []
     },
@@ -83,6 +83,6 @@ Module.register("MMM-CountDownTimers",{
     },
 
     getStyles: function() {
-        return ["MMM-CountDownTimers.css"];
+        return ["MMM-CountDown.css"];
     }
 });
