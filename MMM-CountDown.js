@@ -4,7 +4,17 @@ Module.register("MMM-CountDown",{
     },
 
     start: function() {
-        this.timers = this.config.timers.slice();
+        // Load timers from localStorage if available
+        const stored = localStorage.getItem("MMM-CountDown-timers");
+        if (stored) {
+            try {
+                this.timers = JSON.parse(stored);
+            } catch (e) {
+                this.timers = this.config.timers.slice();
+            }
+        } else {
+            this.timers = this.config.timers.slice();
+        }
         this.loaded = true;
         this.updateDom();
         this.timerInterval = setInterval(() => {
@@ -22,6 +32,9 @@ Module.register("MMM-CountDown",{
             timerDiv.className = "countdown-timer";
             timerDiv.innerHTML = `<span class='timer-name'>${timer.name}</span>: <span class='timer-remaining'>${this.getRemaining(timer.end)}</span>`;
             timerDiv.addEventListener("touchstart", () => {
+                this.removeTimer(idx);
+            });
+            timerDiv.addEventListener("click", () => {
                 this.removeTimer(idx);
             });
             wrapper.appendChild(timerDiv);
@@ -122,6 +135,7 @@ Module.register("MMM-CountDown",{
             const end = form.end.value;
             if (name && end) {
                 this.timers.push({ name, end });
+                localStorage.setItem("MMM-CountDown-timers", JSON.stringify(this.timers)); // Save timers
                 this.updateDom();
             }
             modalOverlay.remove();
@@ -138,6 +152,7 @@ Module.register("MMM-CountDown",{
 
     removeTimer: function(idx) {
         this.timers.splice(idx, 1);
+        localStorage.setItem("MMM-CountDown-timers", JSON.stringify(this.timers)); // Save timers
         this.updateDom();
     },
 
