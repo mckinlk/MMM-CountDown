@@ -125,12 +125,14 @@ Module.register("MMM-CountDown",{
 
         // Cancel button
         modalContent.querySelector('.cancel-btn').addEventListener("click", () => {
+            this.sendNotification("HIDE_KEYBOARD", { target: "COUNTDOWN" });
             modalOverlay.remove();
         });
 
         // Outside click closes modal
         modalOverlay.addEventListener("mousedown", (e) => {
             if (e.target === modalOverlay) {
+                this.sendNotification("HIDE_KEYBOARD", { target: "COUNTDOWN" });
                 modalOverlay.remove();
             }
         });
@@ -146,6 +148,7 @@ Module.register("MMM-CountDown",{
                 this.sendSocketNotification("SAVE_TIMERS", this.timers); // Save timers to disk
                 this.updateDom();
             }
+            this.sendNotification("HIDE_KEYBOARD", { target: "COUNTDOWN" });
             modalOverlay.remove();
         });
 
