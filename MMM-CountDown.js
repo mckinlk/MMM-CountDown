@@ -107,7 +107,7 @@ Module.register("MMM-CountDown",{
         modalContent.innerHTML = `
             <form class='add-timer-form'>
                 <h3>Add Timer</h3>
-                <input type='text' name='name' placeholder='Timer Name' required style="display:block;margin-bottom:1em;width:100%;" />
+                <input type='text' id='eventTitle' name='name' placeholder='Timer Name' required style="display:block;margin-bottom:1em;width:100%;" />
                 <input type='datetime-local' name='end' required style="display:block;margin-bottom:1em;width:100%;" />
                 <div style="text-align:right;">
                     <button type='submit'>Add</button>
