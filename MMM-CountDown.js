@@ -19,21 +19,6 @@ Module.register("MMM-CountDown",{
             this.loaded = true;
             this.updateDom();
         }
-        if (notification === "KEYBOARD_INPUT") {
-            if (this.activeInput) {
-                // Handle special keys (backspace, delete, etc.)
-                if (payload === "{bksp}" || payload === "Backspace") {
-                    this.activeInput.value = this.activeInput.value.slice(0, -1);
-                } else if (payload === "{space}") {
-                    this.activeInput.value += " ";
-                } else if (payload.length === 1) {
-                    this.activeInput.value += payload;
-                }
-                // Optionally trigger input/change events if needed:
-                var event = new Event('input', { bubbles: true });
-                this.activeInput.dispatchEvent(event);
-            }
-        }
     },
 
     getDom: function() {
@@ -165,17 +150,17 @@ Module.register("MMM-CountDown",{
         }, 10);
     },
 
-    attachKeyboardToInput: function(inputElement) {
-        let self = this;
+    attachKeyboardToInput: function() {
+        let self = this; // Store the reference of 'this' for use inside the event listener
+        let inputElement = document.querySelector(".add-timer-modal input[name='name']");
         if (inputElement) {
             inputElement.addEventListener("focus", function(event) {
-                self.activeInput = inputElement;
-                self.sendNotification("SHOW_KEYBOARD", { value: inputElement.value });
+                // Notify the keyboard module to show the keyboard
+                console.log("Attempting to send SHOW_KEYBOARD notification");
+                self.sendNotification("SHOW_KEYBOARD");
             });
-            inputElement.addEventListener("blur", function(event) {
-                self.activeInput = null;
-                self.sendNotification("HIDE_KEYBOARD");
-            });
+        } else {
+            console.log("Input field not found.");
         }
     },
 
