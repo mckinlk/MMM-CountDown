@@ -31,11 +31,10 @@ Module.register("MMM-CountDown",{
             const timerDiv = document.createElement("div");
             timerDiv.className = "countdown-timer";
             timerDiv.innerHTML = `<span class='timer-name'>${timer.name}</span>: <span class='timer-remaining'>${this.getRemaining(timer.end)}</span>`;
-            timerDiv.addEventListener("touchstart", () => {
-                this.removeTimer(idx);
-            });
             timerDiv.addEventListener("click", () => {
-                this.removeTimer(idx);
+                if (confirm(`Remove timer "${timer.name}"?`)) {
+                    this.removeTimer(idx);
+                }
             });
             wrapper.appendChild(timerDiv);
         });
@@ -44,9 +43,6 @@ Module.register("MMM-CountDown",{
         const addBtn = document.createElement("button");
         addBtn.innerText = "Add Timer";
         addBtn.className = "add-timer-btn";
-        addBtn.addEventListener("touchstart", () => {
-            this.showAddTimerModal();
-        });
         addBtn.addEventListener("click", () => {
             this.showAddTimerModal();
         });
@@ -146,8 +142,19 @@ Module.register("MMM-CountDown",{
 
         // Focus first input
         setTimeout(() => {
-            modalContent.querySelector("input[name='name']").focus();
+            const nameInput = modalContent.querySelector("input[name='name']");
+            nameInput.focus();
+            this.attachKeyboardToInput(nameInput);
         }, 10);
+    },
+
+    attachKeyboardToInput: function(inputElement) {
+        let self = this;
+        if (inputElement) {
+            inputElement.addEventListener("focus", function(event) {
+                self.sendNotification("SHOW_KEYBOARD");
+            });
+        }
     },
 
     removeTimer: function(idx) {
