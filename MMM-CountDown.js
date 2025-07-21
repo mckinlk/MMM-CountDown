@@ -82,26 +82,88 @@ Module.register("MMM-CountDown",{
         modalOverlay.style.justifyContent = "center";
         modalOverlay.style.zIndex = "100";
 
-        // Modal content
+        // Modal content (refactored to match GoogleCalendarEventAdder style)
         const modalContent = document.createElement("div");
         modalContent.style.background = "#fff";
         modalContent.style.padding = "2em";
         modalContent.style.borderRadius = "8px";
         modalContent.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
-        modalContent.style.minWidth = "300px";
+        modalContent.style.minWidth = "320px";
         modalContent.tabIndex = -1;
 
-        modalContent.innerHTML = `
-            <form class='add-timer-form'>
-                <h3>Add Timer</h3>
-                <input type='text' id='eventTitle' name='name' placeholder='Timer Name' required style="display:block;margin-bottom:1em;width:100%;" />
-                <input type='datetime-local' name='end' required style="display:block;margin-bottom:1em;width:100%;" />
-                <div style="text-align:right;">
-                    <button type='submit'>Add</button>
-                    <button type='button' class='cancel-btn'>Cancel</button>
-                </div>
-            </form>
-        `;
+        // Header bar
+        const headerBar = document.createElement("div");
+        headerBar.className = "headerBar";
+        headerBar.style.fontWeight = "bold";
+        headerBar.style.fontSize = "1.2em";
+        headerBar.style.marginBottom = "1em";
+        headerBar.textContent = "Add Timer";
+        modalContent.appendChild(headerBar);
+
+        // Content container
+        const formContentContainer = document.createElement("div");
+        formContentContainer.className = "form-content-container";
+
+        // Timer Name field
+        const nameGroup = document.createElement("div");
+        nameGroup.className = "form-group";
+        const nameLabel = document.createElement("label");
+        nameLabel.setAttribute("for", "eventTitle");
+        nameLabel.textContent = "Timer Name:";
+        nameGroup.appendChild(nameLabel);
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.id = "eventTitle";
+        nameInput.name = "name";
+        nameInput.placeholder = "Timer Name";
+        nameInput.required = true;
+        nameInput.style.display = "block";
+        nameInput.style.marginBottom = "1em";
+        nameInput.style.width = "100%";
+        nameGroup.appendChild(nameInput);
+        formContentContainer.appendChild(nameGroup);
+
+        // End time field
+        const endGroup = document.createElement("div");
+        endGroup.className = "form-group";
+        const endLabel = document.createElement("label");
+        endLabel.setAttribute("for", "endTime");
+        endLabel.textContent = "End Time:";
+        endGroup.appendChild(endLabel);
+        const endInput = document.createElement("input");
+        endInput.type = "datetime-local";
+        endInput.id = "endTime";
+        endInput.name = "end";
+        endInput.required = true;
+        endInput.style.display = "block";
+        endInput.style.marginBottom = "1em";
+        endInput.style.width = "100%";
+        endGroup.appendChild(endInput);
+        formContentContainer.appendChild(endGroup);
+
+        // Button container
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "form-group submit-button-container";
+        buttonContainer.style.textAlign = "right";
+
+        const submitBtn = document.createElement("button");
+        submitBtn.type = "submit";
+        submitBtn.textContent = "Add";
+        buttonContainer.appendChild(submitBtn);
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.className = "cancel-btn";
+        cancelBtn.textContent = "Cancel";
+        buttonContainer.appendChild(cancelBtn);
+
+        formContentContainer.appendChild(buttonContainer);
+
+        // Form element
+        const form = document.createElement("form");
+        form.className = "add-timer-form";
+        form.appendChild(formContentContainer);
+        modalContent.appendChild(form);
 
         // Trap focus inside modal
         modalContent.addEventListener("keydown", (e) => {
@@ -111,7 +173,7 @@ Module.register("MMM-CountDown",{
         });
 
         // Cancel button
-        modalContent.querySelector('.cancel-btn').addEventListener("click", () => {
+        cancelBtn.addEventListener("click", () => {
             modalOverlay.remove();
         });
 
@@ -123,11 +185,10 @@ Module.register("MMM-CountDown",{
         });
 
         // Form submit
-        modalContent.querySelector("form").addEventListener("submit", (e) => {
+        form.addEventListener("submit", (e) => {
             e.preventDefault();
-            const form = e.target;
-            const name = form.name.value;
-            const end = form.end.value;
+            const name = nameInput.value;
+            const end = endInput.value;
             if (name && end) {
                 this.timers.push({ name, end });
                 this.sendSocketNotification("SAVE_TIMERS", this.timers); // Save timers to disk
@@ -139,31 +200,21 @@ Module.register("MMM-CountDown",{
         modalOverlay.appendChild(modalContent);
         document.body.appendChild(modalOverlay);
 
-        // Focus first input and attach keyboard
+        // Focus first input and attach keyboard (matching MMM-GoogleCalendarEventAdder style)
         setTimeout(() => {
-            const nameInput = modalContent.querySelector("input[name='name']");
-            this.attachKeyboardToInput(nameInput);
             nameInput.focus();
+            this.activeInput = nameInput;
+            nameInput.addEventListener("focus", (event) => {
+                this.activeInput = event.target;
+                this.sendNotification("SHOW_KEYBOARD");
+            });
             // Manually trigger focus event to ensure keyboard shows
             var focusEvent = new Event('focus', { bubbles: true });
             nameInput.dispatchEvent(focusEvent);
         }, 10);
     },
 
-    attachKeyboardToInput: function() {
-        let self = this; // Store the reference of 'this' for use inside the event listener
-        let eventTitleInput = document.getElementById("eventTitle");
-        if (eventTitleInput) {
-            eventTitleInput.addEventListener("focus", function(event) {
-                console.log("Event Title input field focused.");
-                // Notify the keyboard module to show the keyboard
-                console.log("Attempting to send SHOW_KEYBOARD notification");
-                self.sendNotification("SHOW_KEYBOARD");
-            });
-        } else {
-            console.log("Event Title input field not found.");
-        }
-    },
+    // attachKeyboardToInput is not needed; logic is now handled in showAddTimerModal for consistency with MMM-GoogleCalendarEventAdder
 
     removeTimer: function(idx) {
         this.timers.splice(idx, 1);
