@@ -19,8 +19,7 @@ Module.register("MMM-CountDown",{
             this.loaded = true;
             this.updateDom();
         }
-        if (notification === "KEYBOARD_INPUT") {
-            // Only update if this module's input is focused
+        if (notification === "COUNTDOWN_KEYBOARD_INPUT") {
             if (document.activeElement === this.activeInput) {
                 if (payload === "{bksp}" || payload === "Backspace") {
                     this.activeInput.value = this.activeInput.value.slice(0, -1);
@@ -169,11 +168,11 @@ Module.register("MMM-CountDown",{
         if (inputElement) {
             inputElement.addEventListener("focus", function(event) {
                 self.activeInput = inputElement;
-                self.sendNotification("SHOW_KEYBOARD");
+                self.sendNotification("SHOW_KEYBOARD", { target: "COUNTDOWN" });
             });
             inputElement.addEventListener("blur", function(event) {
                 self.activeInput = null;
-                self.sendNotification("HIDE_KEYBOARD");
+                self.sendNotification("HIDE_KEYBOARD", { target: "COUNTDOWN" });
             });
         }
     },
