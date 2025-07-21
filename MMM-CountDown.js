@@ -107,18 +107,21 @@ Module.register("MMM-CountDown",{
         modalContent.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
                 modalOverlay.remove();
+                this.sendNotification("HIDE_KEYBOARD");
             }
         });
 
         // Cancel button
         modalContent.querySelector('.cancel-btn').addEventListener("click", () => {
             modalOverlay.remove();
+            this.sendNotification("HIDE_KEYBOARD");
         });
 
         // Outside click closes modal
         modalOverlay.addEventListener("mousedown", (e) => {
             if (e.target === modalOverlay) {
                 modalOverlay.remove();
+                this.sendNotification("HIDE_KEYBOARD");
             }
         });
 
@@ -134,6 +137,7 @@ Module.register("MMM-CountDown",{
                 this.updateDom();
             }
             modalOverlay.remove();
+            this.sendNotification("HIDE_KEYBOARD");
         });
 
         modalOverlay.appendChild(modalContent);
