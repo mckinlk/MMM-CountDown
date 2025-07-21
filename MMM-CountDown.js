@@ -21,7 +21,14 @@ Module.register("MMM-CountDown",{
         }
         if (notification === "KEYBOARD_INPUT") {
             if (this.activeInput) {
-                this.activeInput.value = payload;
+                // Handle special keys (backspace, delete, etc.)
+                if (payload === "{bksp}" || payload === "Backspace") {
+                    this.activeInput.value = this.activeInput.value.slice(0, -1);
+                } else if (payload === "{space}") {
+                    this.activeInput.value += " ";
+                } else if (payload.length === 1) {
+                    this.activeInput.value += payload;
+                }
                 // Optionally trigger input/change events if needed:
                 var event = new Event('input', { bubbles: true });
                 this.activeInput.dispatchEvent(event);
@@ -147,11 +154,14 @@ Module.register("MMM-CountDown",{
         modalOverlay.appendChild(modalContent);
         document.body.appendChild(modalOverlay);
 
-        // Focus first input
+        // Focus first input and attach keyboard
         setTimeout(() => {
             const nameInput = modalContent.querySelector("input[name='name']");
-            nameInput.focus();
             this.attachKeyboardToInput(nameInput);
+            nameInput.focus();
+            // Manually trigger focus event to ensure keyboard shows
+            var focusEvent = new Event('focus', { bubbles: true });
+            nameInput.dispatchEvent(focusEvent);
         }, 10);
     },
 
