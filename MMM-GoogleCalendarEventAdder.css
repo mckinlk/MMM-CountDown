@@ -1,0 +1,253 @@
+/* Event Add Status Message */
+#MMM-GoogleCalendarEventAdder .message,
+#MMM-GoogleCalendarEventAdder .message.info {
+    position: absolute;
+    width: 400px;
+    top: 0px;
+    right: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    z-index: 100;
+    font-size: 30px !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#MMM-GoogleCalendarEventAdder .message.success {
+    background-color: transparent;
+    color: #4CAF50;
+    font-size: 30px !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#MMM-GoogleCalendarEventAdder .message.error {
+    background-color: transparent;
+    color: #f44336;
+    font-size: 30px !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Magic Mirror Google Calendar Event Adder Styles */
+#MMM-GoogleCalendarEventAdder button {
+    cursor: pointer;
+    /* background-color: white; setting the background color of button to white */
+}
+
+#MMM-GoogleCalendarEventAdder .add-event-button {
+    /* Positioning the button in the top right of the calendar */
+    position: absolute;
+    top: 80px;
+    left: 1330px;
+    
+    /* Styling the button as a circular button */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: white; 
+    
+    /* Centering the icon in the button */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Removing the button text 
+    font-size: 28px;*/
+    
+    /* Adding a bit of box-shadow for a nice effect */
+    box-shadow: -2px 5px 8px rgba(0, 0, 0, 0.3);
+}
+
+#MMM-GoogleCalendarEventAdder .add-event-button i {
+    /* Creating a gradient effect for the plus icon and making it larger */
+    font-size: 28px; /* you may adjust this based on your preference */
+    background: -webkit-linear-gradient(left, #FBBC05, #EA4335, #34A853, #4285F4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#MMM-GoogleCalendarEventAdder {
+    font-family: 'Roboto', sans-serif;
+    color: #444;
+}
+
+#MMM-GoogleCalendarEventAdder form {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#MMM-GoogleCalendarEventAdder .form-group { /* Add padding to form elements */
+    padding: 0px 10px;
+    text-align: left;
+}
+
+#MMM-GoogleCalendarEventAdder .headerBar {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+    height: 30px;
+    background-color: rgb(241, 243, 244);
+    position: relative; 
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+}
+
+#MMM-GoogleCalendarEventAdder .btn[type="cancel"] {
+    position: absolute;
+    top: 3px;
+    right: 10px;
+    background-color: transparent;
+    color: #444;
+    border-radius: 50%;
+    border: none;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 0;
+    line-height: 30px;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.jasonWorkButton {
+    position: absolute;
+    top: 365px;
+    left: 135px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    line-height: 30px;
+    cursor: pointer
+}
+
+.championsButton {
+    position: absolute;
+    top: 365px;
+    left: 185px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    line-height: 30px;
+    cursor: pointer
+}
+
+#MMM-GoogleCalendarEventAdder .btn[type="cancel"]:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#eventForm .form-content-container {
+    background-color: transparent;
+}
+
+#MMM-GoogleCalendarEventAdder input[type="text"],
+#MMM-GoogleCalendarEventAdder input[type="datetime-local"],
+#MMM-GoogleCalendarEventAdder input[type="date"],
+#MMM-GoogleCalendarEventAdder input[type="checkbox"],
+#MMM-GoogleCalendarEventAdder button {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+#MMM-GoogleCalendarEventAdder button[type="delete"].btn {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
+
+#eventForm #eventTitle {
+    height: 100px;  
+    line-height: 100px;  
+}
+
+#MMM-GoogleCalendarEventAdder .time-container {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 5px;
+}
+
+#MMM-GoogleCalendarEventAdder input[type="date"],
+#MMM-GoogleCalendarEventAdder input[type="datetime-local"] {
+    width: 90%; /* Or any width that you prefer */
+    font-size: 18px;
+}
+
+#eventForm .form-content-container {
+    padding: 5px 15px 5px 15px;
+}
+
+#MMM-GoogleCalendarEventAdder input[type="text"] {
+    width: 100%;
+    height: 60px;
+    font-size: 26px;
+}
+
+#MMM-GoogleCalendarEventAdder [type="checkbox"] {
+    font-size: 18px;
+}
+
+#MMM-GoogleCalendarEventAdder .submit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 5px;
+}
+
+#MMM-GoogleCalendarEventAdder .btn[type="submit"] {
+    margin-left: auto;
+    background-color: #4285F4;
+    color: white;
+    width: 15%;
+    align-self: flex-end;
+    transition: background-color 0.3s ease;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#MMM-GoogleCalendarEventAdder .btn[type="submit"]:hover,
+#MMM-GoogleCalendarEventAdder .btn[type="submit"]:focus {
+    background-color: rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+}
+
+#nameButtonWrapper {
+    width: 100%;
+    text-align: left;
+    margin-top: 10px;
+}
+
+.nameButton {
+    background-color: #f2f2f2; /* light gray background */
+    border: 1px solid #ccc; /* border color */
+    padding: 8px 15px; /* padding around the text */
+    margin: 5px; /* space between buttons */
+    cursor: pointer; /* mouse pointer style */
+    transition: background-color 0.3s; /* smooth transition effect */
+    margin-right: 10px;
+}
+
+.nameButton:last-child {
+    margin-right: 0; /* Remove margin from the last button to avoid extra spacing */
+}
+
+.nameButton:hover {
+    background-color: #e6e6e6; /* slightly darker background on hover */
+}
+
+.selected,
+.nameButton:focus {
+    background-color: #007BFF; /* blue background when selected */
+    color: white; /* white text when selected */
+}

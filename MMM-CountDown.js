@@ -6,6 +6,7 @@ Module.register("MMM-CountDown",{
     start: function() {
         this.timers = [];
         this.loaded = false;
+        this.activeInput = null; // Track active input for keyboard
         this.sendSocketNotification("LOAD_TIMERS");
         this.timerInterval = setInterval(() => {
             this.updateDom();
@@ -17,6 +18,14 @@ Module.register("MMM-CountDown",{
             this.timers = payload || [];
             this.loaded = true;
             this.updateDom();
+        }
+        if (notification === "KEYBOARD_INPUT") {
+            if (this.activeInput) {
+                this.activeInput.value = payload;
+                // Optionally trigger input/change events if needed:
+                var event = new Event('input', { bubbles: true });
+                this.activeInput.dispatchEvent(event);
+            }
         }
     },
 
@@ -150,7 +159,12 @@ Module.register("MMM-CountDown",{
         let self = this;
         if (inputElement) {
             inputElement.addEventListener("focus", function(event) {
-                self.sendNotification("SHOW_KEYBOARD");
+                self.activeInput = inputElement;
+                self.sendNotification("SHOW_KEYBOARD", { value: inputElement.value });
+            });
+            inputElement.addEventListener("blur", function(event) {
+                self.activeInput = null;
+                self.sendNotification("HIDE_KEYBOARD");
             });
         }
     },
