@@ -105,6 +105,8 @@ Module.register("MMM-CountDown",{
                                     if (updatedElement) {
                                         updatedElement.classList.remove('animate');
                                     }
+                                    // Reset animation state so it can trigger again
+                                    this.activeAnimations[timer.end] = false;
                                 }, 10000); // Animation duration (10 seconds to match CSS)
                             }
                             
