@@ -1,7 +1,11 @@
 Module.register("MMM-CountDown",{
     defaults: {
-        timers: []
+        timers: [],
+        minAnimationInterval: 5000,  // Minimum time between animations (5 seconds)
+        maxAnimationInterval: 15000   // Maximum time between animations (15 seconds)
     },
+
+    animationTimeouts: {},  // Store timeouts for each timer
 
     start: function() {
         this.timers = [];
@@ -27,7 +31,7 @@ Module.register("MMM-CountDown",{
 
         // Add timer button at the top
         const addBtn = document.createElement("button");
-        addBtn.innerText = "Add Coundown";
+        addBtn.innerText = "Add Countdown";
         addBtn.className = "add-timer-btn";
         addBtn.style.padding = "4px 8px";
         addBtn.style.fontSize = "var(--font-size-xsmall, 0.8rem)";
@@ -63,14 +67,40 @@ Module.register("MMM-CountDown",{
             // Add flair classes for thresholds
             if (!expired) {
                 const totalHours = days * 24 + hours;
+                let flairClass = "";
                 if (totalHours < 1) {
-                    timerDiv.classList.add("flair-1hour");
+                    flairClass = "flair-1hour";
                 } else if (totalHours < 6) {
-                    timerDiv.classList.add("flair-6hours");
+                    flairClass = "flair-6hours";
                 } else if (totalHours < 12) {
-                    timerDiv.classList.add("flair-12hours");
+                    flairClass = "flair-12hours";
                 } else if (days < 1) {
-                    timerDiv.classList.add("flair-1day");
+                    flairClass = "flair-1day";
+                }
+                
+                if (flairClass) {
+                    timerDiv.classList.add(flairClass);
+                    
+                    // Clear any existing animation timeout for this timer
+                    if (this.animationTimeouts[timer.end]) {
+                        clearTimeout(this.animationTimeouts[timer.end]);
+                    }
+                    
+                    // Set up random interval animation
+                    const startAnimation = () => {
+                        timerDiv.classList.add('animate');
+                        setTimeout(() => {
+                            timerDiv.classList.remove('animate');
+                            // Schedule next animation
+                            const nextInterval = Math.random() * 
+                                (this.config.maxAnimationInterval - this.config.minAnimationInterval) + 
+                                this.config.minAnimationInterval;
+                            this.animationTimeouts[timer.end] = setTimeout(startAnimation, nextInterval);
+                        }, 1500); // Animation duration
+                    };
+                    
+                    // Start the animation cycle
+                    startAnimation();
                 }
             }
 

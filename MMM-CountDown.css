@@ -1,27 +1,39 @@
 /* Countdown Timer Flair Effects */
 
 .flair-1day {
-    animation: pulse-yellow 1.5s infinite;
     border: 2px solid #ffe066;
     background: linear-gradient(90deg, #fffbe6 60%, #fffde6 100%);
 }
 
 .flair-12hours {
-    animation: pulse-orange 1.2s infinite;
     border: 2px solid #ffb366;
     background: linear-gradient(90deg, #fff3e6 60%, #ffe6cc 100%);
 }
 
 .flair-6hours {
-    animation: pulse-red 1s infinite;
     border: 2px solid #ff6666;
     background: linear-gradient(90deg, #ffe6e6 60%, #ffd6d6 100%);
 }
 
 .flair-1hour {
-    animation: shake 0.5s infinite, rainbow-glow 1.2s infinite;
     border: 2px solid #ff2222;
     background: linear-gradient(90deg, #fff0f0 60%, #ffe0e0 100%);
+}
+
+.flair-1day.animate {
+    animation: pulse-yellow 1.5s;
+}
+
+.flair-12hours.animate {
+    animation: pulse-orange 1.2s;
+}
+
+.flair-6hours.animate {
+    animation: pulse-red 1s;
+}
+
+.flair-1hour.animate {
+    animation: shake 0.5s, rainbow-glow 1.2s;
     box-shadow: 0 0 16px 4px #ff2222;
 }
 
@@ -31,7 +43,7 @@
     40% { box-shadow: 0 0 24px 12px #ffee00; }
     60% { box-shadow: 0 0 20px 8px #33ff33; }
     80% { box-shadow: 0 0 16px 4px #3399ff; }
-    100% { box-shadow: 0 0 16px 4px #ff2222; }
+    100% { box-shadow: 0 0 16px 4px #ff22ed; }
 }
 
 @keyframes pulse-yellow {
