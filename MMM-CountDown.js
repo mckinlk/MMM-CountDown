@@ -125,7 +125,17 @@ Module.register("MMM-CountDown",{
 
         // If editing, prefill values
         let nameValue = timer ? timer.name : "";
-        let endValue = timer ? new Date(timer.end).toISOString().slice(0,16) : "";
+        let endValue = "";
+        if (timer) {
+            // Convert UTC ISO string to local datetime-local value
+            const utcDate = new Date(timer.end);
+            const year = utcDate.getFullYear();
+            const month = String(utcDate.getMonth() + 1).padStart(2, '0');
+            const day = String(utcDate.getDate()).padStart(2, '0');
+            const hours = String(utcDate.getHours()).padStart(2, '0');
+            const minutes = String(utcDate.getMinutes()).padStart(2, '0');
+            endValue = `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
         let formTitle = timer ? "Edit Timer" : "Add Timer";
 
         modalContent.innerHTML = `
