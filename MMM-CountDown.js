@@ -13,13 +13,43 @@ Module.register("MMM-CountDown",{
         this.loaded = false;
         this.activeInput = null; // Track active input for keyboard
         this.sendSocketNotification("LOAD_TIMERS");
-        // Update DOM less frequently to prevent animation interruption
+        // Update timers every second
         this.timerInterval = setInterval(() => {
-            // Only update if no animations are currently running
-            const hasRunningAnimations = Object.values(this.activeAnimations).some(isActive => isActive);
-            if (!hasRunningAnimations) {
+            const wrapper = document.querySelector(".countdown-wrapper");
+            if (!wrapper) {
                 this.updateDom();
+                return;
             }
+
+            // Update just the time values without rebuilding the entire DOM
+            this.timers.forEach(timer => {
+                const timerElement = wrapper.querySelector(`[data-timer-id="${timer.end}"]`);
+                if (!timerElement) return;
+
+                const now = new Date();
+                const end = new Date(timer.end);
+                let diff = end - now;
+                let expired = diff < 0;
+                
+                if (!expired) {
+                    let days = Math.floor(diff / (1000*60*60*24));
+                    diff -= days * (1000*60*60*24);
+                    let hours = Math.floor(diff / (1000*60*60));
+                    diff -= hours * (1000*60*60);
+                    let minutes = Math.floor(diff / (1000*60));
+                    diff -= minutes * (1000*60);
+                    let seconds = Math.floor(diff / 1000);
+
+                    // Update just the timer values
+                    const timeValues = timerElement.querySelectorAll('.timer-value');
+                    if (timeValues.length === 4) {
+                        timeValues[0].textContent = String(days).padStart(2, '0');
+                        timeValues[1].textContent = String(hours).padStart(2, '0');
+                        timeValues[2].textContent = String(minutes).padStart(2, '0');
+                        timeValues[3].textContent = String(seconds).padStart(2, '0');
+                    }
+                }
+            });
         }, 1000);
         
         // Clear all animation states on start
