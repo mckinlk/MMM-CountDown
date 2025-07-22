@@ -48,10 +48,11 @@ Module.register("MMM-CountDown",{
 
                 const timeValues = timerElement.querySelectorAll('.timer-value');
                 if (timeValues.length === 4) {
-                    timeValues[0].textContent = String(days).padStart(2, '0');
-                    timeValues[1].textContent = String(hours).padStart(2, '0');
-                    timeValues[2].textContent = String(minutes).padStart(2, '0');
-                    timeValues[3].textContent = String(seconds).padStart(2, '0');
+
+                    timeValues[0].textContent = '\u00A0\u00A0' + String(days).padStart(2, '0') + '\u00A0\u00A0';
+                    timeValues[1].textContent = '\u00A0\u00A0' + String(hours).padStart(2, '0') + '\u00A0\u00A0';
+                    timeValues[2].textContent = '\u00A0\u00A0' + String(minutes).padStart(2, '0') + '\u00A0\u00A0';
+                    timeValues[3].textContent = '\u00A0\u00A0' + String(seconds).padStart(2, '0') + '\u00A0\u00A0';
                 }
             });
         }, 1000);
@@ -175,10 +176,10 @@ Module.register("MMM-CountDown",{
             timerDiv.innerHTML = `
                 <div class='timer-header'>${timer.name}</div>
                 <div class='timer-counts'>
-                    <div class='timer-block'><span class='timer-value'> ${expired ? '--' : String(days).padStart(2, '0')} </span><span class='timer-label'>D</span></div>
-                    <div class='timer-block'><span class='timer-value'> ${expired ? '--' : String(hours).padStart(2, '0')} </span><span class='timer-label'>H</span></div>
-                    <div class='timer-block'><span class='timer-value'> ${expired ? '--' : String(minutes).padStart(2, '0')} </span><span class='timer-label'>M</span></div>
-                    <div class='timer-block'><span class='timer-value'> ${expired ? '--' : String(seconds).padStart(2, '0')} </span><span class='timer-label'>S</span></div>
+                    <div class='timer-block'><span class='timer-value'>&nbsp;&nbsp;${expired ? '--' : String(days).padStart(2, '0')}&nbsp;&nbsp;</span><span class='timer-label'>D</span></div>
+                    <div class='timer-block'><span class='timer-value'>&nbsp;&nbsp;${expired ? '--' : String(hours).padStart(2, '0')}&nbsp;&nbsp;</span><span class='timer-label'>H</span></div>
+                    <div class='timer-block'><span class='timer-value'>&nbsp;&nbsp;${expired ? '--' : String(minutes).padStart(2, '0')}&nbsp;&nbsp;</span><span class='timer-label'>M</span></div>
+                    <div class='timer-block'><span class='timer-value'>&nbsp;&nbsp;${expired ? '--' : String(seconds).padStart(2, '0')}&nbsp;&nbsp;</span><span class='timer-label'>S</span></div>
                 </div>
                 <div class='timer-date'>${expired ? 'Expired' : eventDate}</div>
             `;
