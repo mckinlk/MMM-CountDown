@@ -13,8 +13,13 @@ Module.register("MMM-CountDown",{
         this.loaded = false;
         this.activeInput = null; // Track active input for keyboard
         this.sendSocketNotification("LOAD_TIMERS");
+        // Update DOM less frequently to prevent animation interruption
         this.timerInterval = setInterval(() => {
-            this.updateDom();
+            // Only update if no animations are currently running
+            const hasRunningAnimations = Object.values(this.activeAnimations).some(isActive => isActive);
+            if (!hasRunningAnimations) {
+                this.updateDom();
+            }
         }, 1000);
         
         // Clear all animation states on start
@@ -96,19 +101,22 @@ Module.register("MMM-CountDown",{
                                 return;
                             }
                             
-                            const element = document.querySelector(`[data-timer-id="${timer.end}"]`);
-                            if (element && !element.classList.contains('animate')) {
-                                element.classList.add('animate');
-                                setTimeout(() => {
-                                    // Find the element again in case DOM was updated
-                                    const updatedElement = document.querySelector(`[data-timer-id="${timer.end}"]`);
-                                    if (updatedElement) {
-                                        updatedElement.classList.remove('animate');
-                                    }
-                                    // Reset animation state so it can trigger again
-                                    this.activeAnimations[timer.end] = false;
-                                }, 10000); // Animation duration (10 seconds to match CSS)
+                            const existingElement = document.querySelector(`[data-timer-id="${timer.end}"]`);
+                            // If element exists and is already animating, don't restart
+                            if (existingElement && existingElement.classList.contains('animate')) {
+                                timerDiv.classList.add('animate');  // Sync the new element's state
+                                return;
                             }
+
+                            timerDiv.classList.add('animate');
+                            setTimeout(() => {
+                                const updatedElement = document.querySelector(`[data-timer-id="${timer.end}"]`);
+                                if (updatedElement) {
+                                    updatedElement.classList.remove('animate');
+                                }
+                                // Reset animation state so it can trigger again
+                                this.activeAnimations[timer.end] = false;
+                            }, 10000); // Animation duration (10 seconds to match CSS)
                             
                             // Schedule next animation
                             const nextInterval = Math.random() * 
