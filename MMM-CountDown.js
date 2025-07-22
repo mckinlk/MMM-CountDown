@@ -103,7 +103,7 @@ Module.register("MMM-CountDown",{
                                     if (element) {
                                         element.classList.remove('animate');
                                     }
-                                }, 1500); // Animation duration
+                                }, 3000); // Animation duration (3 seconds to match CSS)
                             }
                             
                             // Schedule next animation

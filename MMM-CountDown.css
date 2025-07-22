@@ -21,19 +21,19 @@
 }
 
 .flair-1day.animate {
-    animation: pulse-yellow 1.5s;
+    animation: pulse-yellow 3s ease-in-out;
 }
 
 .flair-12hours.animate {
-    animation: pulse-orange 1.2s;
+    animation: pulse-orange 3s ease-in-out;
 }
 
 .flair-6hours.animate {
-    animation: pulse-red 1s;
+    animation: pulse-red 3s ease-in-out;
 }
 
 .flair-1hour.animate {
-    animation: shake 0.5s, rainbow-glow 1.2s;
+    animation: shake 3s ease-in-out, rainbow-glow 3s ease-in-out;
     box-shadow: 0 0 16px 4px #ff2222;
 }
 
@@ -66,10 +66,15 @@
 
 @keyframes shake {
     0% { transform: translateX(0); }
-    20% { transform: translateX(-2px); }
-    40% { transform: translateX(2px); }
-    60% { transform: translateX(-2px); }
+    10% { transform: translateX(-3px); }
+    20% { transform: translateX(3px); }
+    30% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    50% { transform: translateX(-2px); }
+    60% { transform: translateX(2px); }
+    70% { transform: translateX(-2px); }
     80% { transform: translateX(2px); }
+    90% { transform: translateX(-1px); }
     100% { transform: translateX(0); }
 }
 /* Styled timer card for MMM-CountDown */
