@@ -1,8 +1,8 @@
 Module.register("MMM-CountDown",{
     defaults: {
         timers: [],
-        minAnimationInterval: 5000,  // Minimum time between animations (5 seconds)
-        maxAnimationInterval: 15000   // Maximum time between animations (15 seconds)
+        minAnimationInterval: 30000,  // Minimum time between animations (30 seconds)
+        maxAnimationInterval: 60000   // Maximum time between animations (60 seconds)
     },
 
     animationTimeouts: {},  // Store timeouts for each timer
@@ -103,7 +103,7 @@ Module.register("MMM-CountDown",{
                                     if (element) {
                                         element.classList.remove('animate');
                                     }
-                                }, 3000); // Animation duration (3 seconds to match CSS)
+                                }, 10000); // Animation duration (10 seconds to match CSS)
                             }
                             
                             // Schedule next animation

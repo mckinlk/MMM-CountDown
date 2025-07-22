@@ -21,19 +21,19 @@
 }
 
 .flair-1day.animate {
-    animation: pulse-yellow 3s ease-in-out;
+    animation: pulse-yellow 10s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 .flair-12hours.animate {
-    animation: pulse-orange 3s ease-in-out;
+    animation: pulse-orange 10s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 .flair-6hours.animate {
-    animation: pulse-red 3s ease-in-out;
+    animation: pulse-red 10s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 .flair-1hour.animate {
-    animation: shake 3s ease-in-out, rainbow-glow 3s ease-in-out;
+    animation: shake 10s cubic-bezier(0.4, 0, 0.6, 1), rainbow-glow 10s cubic-bezier(0.4, 0, 0.6, 1);
     box-shadow: 0 0 16px 4px #ff2222;
 }
 
