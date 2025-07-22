@@ -6,6 +6,7 @@ Module.register("MMM-CountDown",{
     },
 
     animationTimeouts: {},  // Store timeouts for each timer
+    activeAnimations: {},   // Track which timers are currently being animated
 
     start: function() {
         this.timers = [];
@@ -15,6 +16,10 @@ Module.register("MMM-CountDown",{
         this.timerInterval = setInterval(() => {
             this.updateDom();
         }, 1000);
+        
+        // Clear all animation states on start
+        this.animationTimeouts = {};
+        this.activeAnimations = {};
     },
 
     socketNotificationReceived: function(notification, payload) {
@@ -81,26 +86,40 @@ Module.register("MMM-CountDown",{
                 if (flairClass) {
                     timerDiv.classList.add(flairClass);
                     
-                    // Clear any existing animation timeout for this timer
-                    if (this.animationTimeouts[timer.end]) {
-                        clearTimeout(this.animationTimeouts[timer.end]);
-                    }
-                    
-                    // Set up random interval animation
-                    const startAnimation = () => {
-                        timerDiv.classList.add('animate');
-                        setTimeout(() => {
-                            timerDiv.classList.remove('animate');
+                    // Only set up animation if it's not already running
+                    if (!this.activeAnimations[timer.end]) {
+                        this.activeAnimations[timer.end] = true;
+                        
+                        const startAnimation = () => {
+                            // Check if timer still exists and should be animated
+                            if (!this.activeAnimations[timer.end]) {
+                                return;
+                            }
+                            
+                            const element = document.querySelector(`[data-timer-id="${timer.end}"]`);
+                            if (element) {
+                                element.classList.add('animate');
+                                setTimeout(() => {
+                                    if (element) {
+                                        element.classList.remove('animate');
+                                    }
+                                }, 1500); // Animation duration
+                            }
+                            
                             // Schedule next animation
                             const nextInterval = Math.random() * 
                                 (this.config.maxAnimationInterval - this.config.minAnimationInterval) + 
                                 this.config.minAnimationInterval;
                             this.animationTimeouts[timer.end] = setTimeout(startAnimation, nextInterval);
-                        }, 1500); // Animation duration
-                    };
+                        };
+                        
+                        // Start the animation cycle
+                        const initialDelay = Math.random() * this.config.minAnimationInterval;
+                        this.animationTimeouts[timer.end] = setTimeout(startAnimation, initialDelay);
+                    }
                     
-                    // Start the animation cycle
-                    startAnimation();
+                    // Add a data attribute to identify this timer's element
+                    timerDiv.setAttribute('data-timer-id', timer.end);
                 }
             }
 
@@ -277,6 +296,16 @@ Module.register("MMM-CountDown",{
     },
 
     removeTimer: function(idx) {
+        const timer = this.timers[idx];
+        if (timer) {
+            // Clean up animations
+            if (this.animationTimeouts[timer.end]) {
+                clearTimeout(this.animationTimeouts[timer.end]);
+                delete this.animationTimeouts[timer.end];
+            }
+            delete this.activeAnimations[timer.end];
+        }
+        
         this.timers.splice(idx, 1);
         this.sendSocketNotification("SAVE_TIMERS", this.timers); // Save timers to disk
         this.updateDom();
