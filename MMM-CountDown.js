@@ -72,7 +72,7 @@ Module.register("MMM-CountDown",{
         addBtn.innerText = "Add Coundown";
         addBtn.className = "add-timer-btn";
         addBtn.style.padding = "4px 8px";
-        addBtn.style.fontSize = "var(--font-size-small, 0.8rem)";
+        addBtn.style.fontSize = "var(--font-size-xsmall, 0.8rem)";
         addBtn.addEventListener("click", () => {
             this.showAddTimerModal();
         });
