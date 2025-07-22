@@ -25,8 +25,22 @@ Module.register("MMM-CountDown",{
         const wrapper = document.createElement("div");
         wrapper.className = "countdown-wrapper";
 
+        // Add timer button at the top
+        const addBtn = document.createElement("button");
+        addBtn.innerText = "Add Coundown";
+        addBtn.className = "add-timer-btn";
+        addBtn.style.padding = "4px 8px";
+        addBtn.style.fontSize = "var(--font-size-xsmall, 0.8rem)";
+        addBtn.addEventListener("click", () => {
+            this.showTimerModal();
+        });
+        wrapper.appendChild(addBtn);
+
+        // Sort timers by soonest event first
+        const sortedTimers = this.timers.slice().sort((a, b) => new Date(a.end) - new Date(b.end));
+
         // Display timers
-        this.timers.forEach((timer, idx) => {
+        sortedTimers.forEach((timer, idx) => {
             const timerDiv = document.createElement("div");
             timerDiv.className = "countdown-timer styled-timer";
 
@@ -46,6 +60,20 @@ Module.register("MMM-CountDown",{
                 seconds = Math.floor(diff / 1000);
             }
 
+            // Add flair classes for thresholds
+            if (!expired) {
+                const totalHours = days * 24 + hours;
+                if (totalHours < 1) {
+                    timerDiv.classList.add("flair-1hour");
+                } else if (totalHours < 6) {
+                    timerDiv.classList.add("flair-6hours");
+                } else if (totalHours < 12) {
+                    timerDiv.classList.add("flair-12hours");
+                } else if (days < 1) {
+                    timerDiv.classList.add("flair-1day");
+                }
+            }
+
             // Format event date
             const eventDate = end.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -60,41 +88,14 @@ Module.register("MMM-CountDown",{
                 <div class='timer-date'>${expired ? 'Expired' : eventDate}</div>
             `;
             timerDiv.addEventListener("click", () => {
-                if (confirm(`Remove timer \"${timer.name}\"?`)) {
-                    this.removeTimer(idx);
-                }
+                this.showTimerModal(timer, idx);
             });
             wrapper.appendChild(timerDiv);
         });
 
-        // Add timer button
-        const addBtn = document.createElement("button");
-        addBtn.innerText = "Add Coundown";
-        addBtn.className = "add-timer-btn";
-        addBtn.style.padding = "4px 8px";
-        addBtn.style.fontSize = "var(--font-size-xsmall, 0.8rem)";
-        addBtn.addEventListener("click", () => {
-            this.showAddTimerModal();
-        });
-        wrapper.appendChild(addBtn);
-
         return wrapper;
     },
-
-    getRemaining: function(endTime) {
-        const now = new Date();
-        const end = new Date(endTime);
-        let diff = end - now;
-        if (diff < 0) return "Expired";
-        const days = Math.floor(diff / (1000*60*60*24));
-        diff -= days * (1000*60*60*24);
-        const hours = Math.floor(diff / (1000*60*60));
-        diff -= hours * (1000*60*60);
-        const minutes = Math.floor(diff / (1000*60));
-        return `${days}d ${hours}h ${minutes}m`;
-    },
-
-    showAddTimerModal: function() {
+    showTimerModal: function(timer = null, idx = null) {
         // Remove existing modal if present
         let oldModal = document.querySelector('.add-timer-modal');
         if (oldModal) oldModal.remove();
@@ -122,13 +123,19 @@ Module.register("MMM-CountDown",{
         modalContent.style.minWidth = "300px";
         modalContent.tabIndex = -1;
 
+        // If editing, prefill values
+        let nameValue = timer ? timer.name : "";
+        let endValue = timer ? new Date(timer.end).toISOString().slice(0,16) : "";
+        let formTitle = timer ? "Edit Timer" : "Add Timer";
+
         modalContent.innerHTML = `
-            <form class='add-timer-form'>
-                <h3>Add Timer</h3>
-                <input type='text' id='countDown' name='name' placeholder='Timer Name' required style="display:block;margin-bottom:1em;width:100%;" />
-                <input type='datetime-local' name='end' required style="display:block;margin-bottom:1em;width:100%;" />
+            <form class='timer-form'>
+                <h3>${formTitle}</h3>
+                <input type='text' id='timerName' name='name' value='${nameValue}' placeholder='Timer Name' required style="display:block;margin-bottom:1em;width:100%;" />
+                <input type='datetime-local' name='end' value='${endValue}' required style="display:block;margin-bottom:1em;width:100%;" />
                 <div style="text-align:right;">
-                    <button type='submit'>Add</button>
+                    <button type='submit'>${timer ? "Save" : "Add"}</button>
+                    ${timer ? "<button type='button' class='delete-btn'>Delete</button>" : ""}
                     <button type='button' class='cancel-btn'>Cancel</button>
                 </div>
             </form>
@@ -148,6 +155,17 @@ Module.register("MMM-CountDown",{
             this.sendNotification("FORM_CLOSED");
         });
 
+        // Delete button (only for edit)
+        if (timer) {
+            modalContent.querySelector('.delete-btn').addEventListener("click", () => {
+                if (confirm(`Delete timer \"${timer.name}\"?`)) {
+                    this.removeTimer(idx);
+                    modalOverlay.remove();
+                    this.sendNotification("FORM_CLOSED");
+                }
+            });
+        }
+
         // Outside click closes modal
         modalOverlay.addEventListener("mousedown", (e) => {
             if (e.target === modalOverlay) {
@@ -163,7 +181,13 @@ Module.register("MMM-CountDown",{
             const name = form.name.value;
             const end = form.end.value;
             if (name && end) {
-                this.timers.push({ name, end });
+                if (timer) {
+                    this.timers[idx] = { name, end };
+                } else {
+                    this.timers.push({ name, end });
+                }
+                // Sort timers after add/edit
+                this.timers.sort((a, b) => new Date(a.end) - new Date(b.end));
                 this.sendSocketNotification("SAVE_TIMERS", this.timers); // Save timers to disk
                 this.updateDom();
             }
@@ -179,11 +203,25 @@ Module.register("MMM-CountDown",{
             const nameInput = modalContent.querySelector("input[name='name']");
             this.attachKeyboardToInput(nameInput);
             nameInput.focus();
-            // Manually trigger focus event to ensure keyboard shows
             var focusEvent = new Event('focus', { bubbles: true });
             nameInput.dispatchEvent(focusEvent);
         }, 10);
     },
+
+    getRemaining: function(endTime) {
+        const now = new Date();
+        const end = new Date(endTime);
+        let diff = end - now;
+        if (diff < 0) return "Expired";
+        const days = Math.floor(diff / (1000*60*60*24));
+        diff -= days * (1000*60*60*24);
+        const hours = Math.floor(diff / (1000*60*60));
+        diff -= hours * (1000*60*60);
+        const minutes = Math.floor(diff / (1000*60));
+        return `${days}d ${hours}h ${minutes}m`;
+    },
+
+    // showAddTimerModal is now handled by showTimerModal
 
     attachKeyboardToInput: function(inputField) {
         let self = this;

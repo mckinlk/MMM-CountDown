@@ -1,3 +1,65 @@
+/* Countdown Timer Flair Effects */
+
+.flair-1day {
+    animation: pulse-yellow 1.5s infinite;
+    border: 2px solid #ffe066;
+    background: linear-gradient(90deg, #fffbe6 60%, #fffde6 100%);
+}
+
+.flair-12hours {
+    animation: pulse-orange 1.2s infinite;
+    border: 2px solid #ffb366;
+    background: linear-gradient(90deg, #fff3e6 60%, #ffe6cc 100%);
+}
+
+.flair-6hours {
+    animation: pulse-red 1s infinite;
+    border: 2px solid #ff6666;
+    background: linear-gradient(90deg, #ffe6e6 60%, #ffd6d6 100%);
+}
+
+.flair-1hour {
+    animation: shake 0.5s infinite, rainbow-glow 1.2s infinite;
+    border: 2px solid #ff2222;
+    background: linear-gradient(90deg, #fff0f0 60%, #ffe0e0 100%);
+    box-shadow: 0 0 16px 4px #ff2222;
+}
+
+@keyframes rainbow-glow {
+    0% { box-shadow: 0 0 16px 4px #ff2222; }
+    20% { box-shadow: 0 0 20px 8px #ff9900; }
+    40% { box-shadow: 0 0 24px 12px #ffee00; }
+    60% { box-shadow: 0 0 20px 8px #33ff33; }
+    80% { box-shadow: 0 0 16px 4px #3399ff; }
+    100% { box-shadow: 0 0 16px 4px #ff2222; }
+}
+
+@keyframes pulse-yellow {
+    0% { box-shadow: 0 0 0 0 #ffe066; }
+    70% { box-shadow: 0 0 12px 4px #ffe066; }
+    100% { box-shadow: 0 0 0 0 #ffe066; }
+}
+
+@keyframes pulse-orange {
+    0% { box-shadow: 0 0 0 0 #ffb366; }
+    70% { box-shadow: 0 0 12px 4px #ffb366; }
+    100% { box-shadow: 0 0 0 0 #ffb366; }
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 #ff6666; }
+    70% { box-shadow: 0 0 16px 6px #ff6666; }
+    100% { box-shadow: 0 0 0 0 #ff6666; }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-2px); }
+    40% { transform: translateX(2px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+    100% { transform: translateX(0); }
+}
 /* Styled timer card for MMM-CountDown */
 /* Smaller styled timer card for MMM-CountDown, using CSS variables */
 /* Even smaller styled timer card for MMM-CountDown, using CSS variables */
