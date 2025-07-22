@@ -53,9 +53,9 @@ Module.register("MMM-CountDown",{
                 <div class='timer-header'>${timer.name}</div>
                 <div class='timer-counts'>
                     <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(days).padStart(2, '0')}</span><span class='timer-label'>DAYS</span></div>
-                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(hours).padStart(2, '0')}</span><span class='timer-label'>HOURS</span></div>
-                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(minutes).padStart(2, '0')}</span><span class='timer-label'>MINUTES</span></div>
-                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(seconds).padStart(2, '0')}</span><span class='timer-label'>SECONDS</span></div>
+                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(hrs).padStart(2, '0')}</span><span class='timer-label'>HRS</span></div>
+                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(min).padStart(2, '0')}</span><span class='timer-label'>MIN</span></div>
+                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(sec).padStart(2, '0')}</span><span class='timer-label'>SEC</span></div>
                 </div>
                 <div class='timer-date'>${expired ? 'Expired' : eventDate}</div>
             `;
