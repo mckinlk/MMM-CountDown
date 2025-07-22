@@ -104,6 +104,9 @@ Module.register("MMM-CountDown",{
                 seconds = Math.floor(diff / 1000);
             }
 
+            // Add data-timer-id to all timers for updates
+            timerDiv.setAttribute('data-timer-id', timer.end);
+
             // Add flair classes for thresholds
             if (!expired) {
                 const totalHours = days * 24 + hours;
@@ -159,9 +162,6 @@ Module.register("MMM-CountDown",{
                         const initialDelay = Math.random() * this.config.minAnimationInterval;
                         this.animationTimeouts[timer.end] = setTimeout(startAnimation, initialDelay);
                     }
-                    
-                    // Add a data attribute to identify this timer's element
-                    timerDiv.setAttribute('data-timer-id', timer.end);
                 }
             }
 
