@@ -28,10 +28,39 @@ Module.register("MMM-CountDown",{
         // Display timers
         this.timers.forEach((timer, idx) => {
             const timerDiv = document.createElement("div");
-            timerDiv.className = "countdown-timer";
-            timerDiv.innerHTML = `<span class='timer-name'>${timer.name}</span>: <span class='timer-remaining'>${this.getRemaining(timer.end)}</span>`;
+            timerDiv.className = "countdown-timer styled-timer";
+
+            // Calculate time left
+            const now = new Date();
+            const end = new Date(timer.end);
+            let diff = end - now;
+            let expired = diff < 0;
+            let days = 0, hours = 0, minutes = 0, seconds = 0;
+            if (!expired) {
+                days = Math.floor(diff / (1000*60*60*24));
+                diff -= days * (1000*60*60*24);
+                hours = Math.floor(diff / (1000*60*60));
+                diff -= hours * (1000*60*60);
+                minutes = Math.floor(diff / (1000*60));
+                diff -= minutes * (1000*60);
+                seconds = Math.floor(diff / 1000);
+            }
+
+            // Format event date
+            const eventDate = end.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+
+            timerDiv.innerHTML = `
+                <div class='timer-header'>${timer.name}</div>
+                <div class='timer-counts'>
+                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(days).padStart(2, '0')}</span><span class='timer-label'>DAYS</span></div>
+                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(hours).padStart(2, '0')}</span><span class='timer-label'>HOURS</span></div>
+                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(minutes).padStart(2, '0')}</span><span class='timer-label'>MINUTES</span></div>
+                    <div class='timer-block'><span class='timer-value'>${expired ? '--' : String(seconds).padStart(2, '0')}</span><span class='timer-label'>SECONDS</span></div>
+                </div>
+                <div class='timer-date'>${expired ? 'Expired' : eventDate}</div>
+            `;
             timerDiv.addEventListener("click", () => {
-                if (confirm(`Remove timer "${timer.name}"?`)) {
+                if (confirm(`Remove timer \"${timer.name}\"?`)) {
                     this.removeTimer(idx);
                 }
             });
