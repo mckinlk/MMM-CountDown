@@ -97,11 +97,13 @@ Module.register("MMM-CountDown",{
                             }
                             
                             const element = document.querySelector(`[data-timer-id="${timer.end}"]`);
-                            if (element) {
+                            if (element && !element.classList.contains('animate')) {
                                 element.classList.add('animate');
                                 setTimeout(() => {
-                                    if (element) {
-                                        element.classList.remove('animate');
+                                    // Find the element again in case DOM was updated
+                                    const updatedElement = document.querySelector(`[data-timer-id="${timer.end}"]`);
+                                    if (updatedElement) {
+                                        updatedElement.classList.remove('animate');
                                     }
                                 }, 10000); // Animation duration (10 seconds to match CSS)
                             }
