@@ -46,6 +46,71 @@ Module.register("MMM-CountDown",{
                 diff -= minutes * (1000*60);
                 let seconds = Math.floor(diff / 1000);
 
+                // Update flair classes based on current time remaining
+                const totalHours = days * 24 + hours;
+                const flairClasses = ['flair-1hour', 'flair-6hours', 'flair-12hours', 'flair-1day'];
+                
+                // Remove all existing flair classes
+                flairClasses.forEach(cls => timerElement.classList.remove(cls));
+                
+                // Add appropriate flair class
+                let newFlairClass = "";
+                if (totalHours < 3) {
+                    newFlairClass = "flair-1hour";
+                } else if (totalHours < 6) {
+                    newFlairClass = "flair-6hours";
+                } else if (totalHours < 12) {
+                    newFlairClass = "flair-12hours";
+                } else if (days < 1) {
+                    newFlairClass = "flair-1day";
+                }
+                
+                if (newFlairClass) {
+                    timerElement.classList.add(newFlairClass);
+                    
+                    // Set up animation if it's not already running and element has flair
+                    if (!this.activeAnimations[timer.end]) {
+                        this.activeAnimations[timer.end] = true;
+                        
+                        const startAnimation = () => {
+                            // Check if timer still exists and should be animated
+                            if (!this.activeAnimations[timer.end]) {
+                                return;
+                            }
+                            
+                            const existingElement = document.querySelector(`[data-timer-id="${timer.end}"]`);
+                            if (existingElement && !existingElement.classList.contains('animate')) {
+                                existingElement.classList.add('animate');
+                                setTimeout(() => {
+                                    const updatedElement = document.querySelector(`[data-timer-id="${timer.end}"]`);
+                                    if (updatedElement) {
+                                        updatedElement.classList.remove('animate');
+                                    }
+                                    // Reset animation state so it can trigger again
+                                    this.activeAnimations[timer.end] = false;
+                                }, 10000); // Animation duration (10 seconds to match CSS)
+                            }
+                            
+                            // Schedule next animation
+                            const nextInterval = Math.random() * 
+                                (this.config.maxAnimationInterval - this.config.minAnimationInterval) + 
+                                this.config.minAnimationInterval;
+                            this.animationTimeouts[timer.end] = setTimeout(startAnimation, nextInterval);
+                        };
+                        
+                        // Start the animation cycle
+                        const initialDelay = Math.random() * this.config.minAnimationInterval;
+                        this.animationTimeouts[timer.end] = setTimeout(startAnimation, initialDelay);
+                    }
+                } else {
+                    // No flair class needed, stop animations if running
+                    if (this.animationTimeouts[timer.end]) {
+                        clearTimeout(this.animationTimeouts[timer.end]);
+                        delete this.animationTimeouts[timer.end];
+                    }
+                    this.activeAnimations[timer.end] = false;
+                }
+
                 const timeValues = timerElement.querySelectorAll('.timer-value');
                 if (timeValues.length === 4) {
 
@@ -116,7 +181,7 @@ Module.register("MMM-CountDown",{
             if (!expired) {
                 const totalHours = days * 24 + hours;
                 let flairClass = "";
-                if (totalHours < 1) {
+                if (totalHours < 3) {
                     flairClass = "flair-1hour";
                 } else if (totalHours < 6) {
                     flairClass = "flair-6hours";
